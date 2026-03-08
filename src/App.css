@@ -1,0 +1,205 @@
+.container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+}
+
+/* ── Card ── */
+.card {
+  background: #ffffff;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04);
+  width: 100%;
+  max-width: 440px;
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 32px 32px 24px;
+  text-align: center;
+  border-bottom: 1px solid #f1f3f5;
+}
+
+.candle-icon {
+  font-size: 32px;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.card-header h1 {
+  font-size: 22px;
+  font-weight: 600;
+  color: #212529;
+  margin-bottom: 8px;
+}
+
+.subtitle {
+  font-size: 13px;
+  color: #868e96;
+  line-height: 1.6;
+}
+
+/* ── Form ── */
+.form {
+  padding: 28px 32px 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 22px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.field > label {
+  font-size: 13px;
+  font-weight: 500;
+  color: #495057;
+}
+
+.field input[type='text'],
+.field input[type='time'] {
+  height: 42px;
+  padding: 0 12px;
+  border: 1.5px solid #dee2e6;
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: inherit;
+  color: #212529;
+  background: #ffffff;
+  transition: border-color 0.15s;
+  outline: none;
+}
+
+.field input[type='text'] {
+  width: 100%;
+}
+
+.field input[type='time'] {
+  width: fit-content;
+}
+
+.field input[type='text']:focus,
+.field input[type='time']:focus {
+  border-color: #3b5bdb;
+}
+
+.field-hint {
+  font-size: 12px;
+  color: #868e96;
+  line-height: 1.5;
+}
+
+/* ── Checkboxes ── */
+.checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding-top: 2px;
+}
+
+.checkbox-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  color: #343a40;
+  user-select: none;
+}
+
+.checkbox-label input[type='checkbox'] {
+  width: 17px;
+  height: 17px;
+  accent-color: #3b5bdb;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+/* ── Messages ── */
+.message {
+  padding: 12px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.error-message {
+  background: #fff5f5;
+  color: #c92a2a;
+  border: 1px solid #ffc9c9;
+}
+
+.success-message {
+  background: #f3faf3;
+  color: #2b8a3e;
+  border: 1px solid #b2f2bb;
+}
+
+/* ── Button ── */
+.generate-btn {
+  height: 46px;
+  background: #3b5bdb;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 500;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.15s, transform 0.1s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 2px;
+}
+
+.generate-btn:hover:not(:disabled) {
+  background: #3451c7;
+}
+
+.generate-btn:active:not(:disabled) {
+  transform: scale(0.99);
+}
+
+.generate-btn:disabled {
+  background: #748ffc;
+  cursor: not-allowed;
+}
+
+.loading-text {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.4);
+  border-top-color: #ffffff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* ── Mobile ── */
+@media (max-width: 480px) {
+  .card-header {
+    padding: 24px 20px 20px;
+  }
+
+  .form {
+    padding: 24px 20px 28px;
+  }
+}
