@@ -110,9 +110,12 @@ export function processCalendarItems(items, today, endDate) {
     const timeMatch = candle.title.match(/:\s*(.+)$/)
     const timeDisplay = timeMatch ? timeMatch[1].trim() : ''
 
+    const dateStr = candle.date.substring(0, 10)
     results.push({
       candleISOString: candle.date, // e.g. "2026-03-13T17:52:00-04:00"
       timeDisplay,
+      sunsetDisplay: formatLocalTime(candle.date, 18),
+      dateDisplay: formatDateDisplay(dateStr),
       parshah,
       holiday,
     })
@@ -127,4 +130,32 @@ function addOneDay(dateStr) {
   const d = new Date(dateStr + 'T12:00:00')
   d.setDate(d.getDate() + 1)
   return d.toISOString().substring(0, 10)
+}
+
+/**
+ * Formats a time from an ISO string (with UTC offset) into "h:mmam/pm" local time,
+ * optionally adding extra minutes first.
+ * e.g. "2026-03-13T17:52:00-04:00" + 0 min → "5:52pm"
+ *      "2026-03-13T17:52:00-04:00" + 18 min → "6:10pm"
+ */
+export function formatLocalTime(isoString, addMinutes = 0) {
+  const match = isoString.match(/T(\d{2}):(\d{2}):\d{2}([+-])(\d{2}):(\d{2})$/)
+  if (!match) return ''
+  const [, hStr, mStr, sign, offH, offM] = match
+  const offsetMinutes = (parseInt(offH) * 60 + parseInt(offM)) * (sign === '+' ? 1 : -1)
+  const localMinutes = parseInt(hStr) * 60 + parseInt(mStr) + offsetMinutes + addMinutes
+  const wrapped = ((localMinutes % (24 * 60)) + 24 * 60) % (24 * 60)
+  const h = Math.floor(wrapped / 60)
+  const m = wrapped % 60
+  const period = h >= 12 ? 'pm' : 'am'
+  const h12 = h % 12 || 12
+  return `${h12}:${String(m).padStart(2, '0')}${period}`
+}
+
+/**
+ * Formats "2026-03-13" as "Friday, March 13"
+ */
+export function formatDateDisplay(dateStr) {
+  const d = new Date(dateStr + 'T12:00:00')
+  return d.toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' })
 }

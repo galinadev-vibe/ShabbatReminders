@@ -3,6 +3,8 @@ import { fetchCalendarData, processCalendarItems, findSimchatTorahDate } from '.
 import { generateICS } from './utils/icsGenerator'
 import './App.css'
 
+const PREVIEW_COUNT = 3
+
 export default function App() {
   const [zipCode, setZipCode] = useState('')
   const [familyParshah, setFamilyParshah] = useState(true)
@@ -10,17 +12,21 @@ export default function App() {
   const [reminderTime, setReminderTime] = useState('12:00')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
-  const [success, setSuccess] = useState(false)
+  const [previewEvents, setPreviewEvents] = useState(null) // null = not yet generated
+
+  function clearPreview() {
+    setPreviewEvents(null)
+    setError('')
+  }
 
   function handleZipChange(e) {
     setZipCode(e.target.value.replace(/\D/g, '').slice(0, 5))
-    setError('')
-    setSuccess(false)
+    clearPreview()
   }
 
-  async function handleGenerate() {
+  async function handlePreview() {
     setError('')
-    setSuccess(false)
+    setPreviewEvents(null)
 
     if (!/^\d{5}$/.test(zipCode)) {
       setError('Please enter a valid 5-digit US zip code.')
@@ -51,25 +57,26 @@ export default function App() {
         throw new Error('No upcoming candle lighting events found for this zip code.')
       }
 
-      const icsContent = generateICS(events, { familyParshah, kidsParshah, reminderTime })
-
-      // Trigger file download
-      const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' })
-      const url = URL.createObjectURL(blob)
-      const a = document.createElement('a')
-      a.href = url
-      a.download = 'shabbat-reminders.ics'
-      document.body.appendChild(a)
-      a.click()
-      document.body.removeChild(a)
-      URL.revokeObjectURL(url)
-
-      setSuccess(true)
+      setPreviewEvents(events)
     } catch (err) {
       setError(err.message || 'Something went wrong. Please try again.')
     } finally {
       setLoading(false)
     }
+  }
+
+  function handleDownload() {
+    if (!previewEvents) return
+    const icsContent = generateICS(previewEvents, { familyParshah, kidsParshah, reminderTime })
+    const blob = new Blob([icsContent], { type: 'text/calendar;charset=utf-8' })
+    const url = URL.createObjectURL(blob)
+    const a = document.createElement('a')
+    a.href = url
+    a.download = 'shabbat-reminders.ics'
+    document.body.appendChild(a)
+    a.click()
+    document.body.removeChild(a)
+    URL.revokeObjectURL(url)
   }
 
   return (
@@ -107,7 +114,7 @@ export default function App() {
                 <input
                   type="checkbox"
                   checked={familyParshah}
-                  onChange={(e) => { setFamilyParshah(e.target.checked); setError('') }}
+                  onChange={(e) => { setFamilyParshah(e.target.checked); clearPreview() }}
                 />
                 <span>Family Parshah &amp; Holiday links</span>
               </label>
@@ -115,7 +122,7 @@ export default function App() {
                 <input
                   type="checkbox"
                   checked={kidsParshah}
-                  onChange={(e) => { setKidsParshah(e.target.checked); setError('') }}
+                  onChange={(e) => { setKidsParshah(e.target.checked); clearPreview() }}
                 />
                 <span>Kids Parshah &amp; Holiday links</span>
               </label>
@@ -129,40 +136,77 @@ export default function App() {
               id="reminderTime"
               type="time"
               value={reminderTime}
-              onChange={(e) => setReminderTime(e.target.value)}
+              onChange={(e) => { setReminderTime(e.target.value); clearPreview() }}
             />
             <span className="field-hint">
               on the day of each candle lighting (Shabbat &amp; holidays)
             </span>
           </div>
 
-          {/* Error / Success messages */}
+          {/* Error message */}
           {error && (
             <div className="message error-message" role="alert">
               {error}
             </div>
           )}
-          {success && (
-            <div className="message success-message" role="status">
-              ✓ Calendar downloaded! Import it into Google Calendar, Apple Calendar, or Outlook.
+
+          {/* Preview section */}
+          {previewEvents && (
+            <div className="preview">
+              <p className="preview-heading">
+                Preview — {previewEvents.length} event{previewEvents.length !== 1 ? 's' : ''} through Simchat Torah
+              </p>
+              <ul className="preview-list">
+                {previewEvents.slice(0, PREVIEW_COUNT).map((ev) => {
+                  const label = ev.holiday?.title || ev.parshah?.title || 'Shabbat'
+                  return (
+                    <li key={ev.candleISOString} className="preview-row">
+                      <span className="preview-date">{ev.dateDisplay}</span>
+                      <span className="preview-label">{label}</span>
+                      <span className="preview-times">
+                        Candles {ev.timeDisplay}
+                        {ev.sunsetDisplay && (
+                          <> · Sunset {ev.sunsetDisplay}</>
+                        )}
+                      </span>
+                    </li>
+                  )
+                })}
+              </ul>
+              {previewEvents.length > PREVIEW_COUNT && (
+                <p className="preview-more">
+                  …and {previewEvents.length - PREVIEW_COUNT} more events
+                </p>
+              )}
             </div>
           )}
 
           {/* CTA */}
-          <button
-            className="generate-btn"
-            onClick={handleGenerate}
-            disabled={loading}
-          >
-            {loading ? (
-              <span className="loading-text">
-                <span className="spinner" aria-hidden="true" />
-                Generating…
-              </span>
-            ) : (
-              'Generate Calendar ↓'
-            )}
-          </button>
+          {!previewEvents ? (
+            <button
+              className="generate-btn"
+              onClick={handlePreview}
+              disabled={loading}
+            >
+              {loading ? (
+                <span className="loading-text">
+                  <span className="spinner" aria-hidden="true" />
+                  Loading…
+                </span>
+              ) : (
+                'Preview Calendar'
+              )}
+            </button>
+          ) : (
+            <div className="btn-group">
+              <button className="generate-btn outline-btn" onClick={clearPreview}>
+                ← Edit
+              </button>
+              <button className="generate-btn" onClick={handleDownload}>
+                Download Calendar ↓
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

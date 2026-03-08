@@ -84,7 +84,11 @@ export function generateICS(events, { familyParshah, kidsParshah, reminderTime }
     }
 
     // --- Build description ---
-    const descLines = [`Candle lighting: ${timeDisplay}`]
+    const sunsetLine = event.sunsetDisplay ? `Sunset: ${event.sunsetDisplay}` : ''
+    const descLines = [
+      `Candle lighting: ${timeDisplay}`,
+      ...(sunsetLine ? [sunsetLine] : []),
+    ]
 
     if (holiday) {
       const links = getHolidayLinks(holiday.title)

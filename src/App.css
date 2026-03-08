@@ -193,6 +193,83 @@
   }
 }
 
+/* ── Preview ── */
+.preview {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 10px;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.preview-heading {
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: #868e96;
+  margin: 0;
+}
+
+.preview-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.preview-row {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.preview-date {
+  font-size: 13px;
+  font-weight: 600;
+  color: #212529;
+}
+
+.preview-label {
+  font-size: 13px;
+  color: #495057;
+}
+
+.preview-times {
+  font-size: 12px;
+  color: #868e96;
+}
+
+.preview-more {
+  font-size: 12px;
+  color: #868e96;
+  margin: 0;
+}
+
+/* ── Button group (Edit + Download) ── */
+.btn-group {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-group .generate-btn {
+  flex: 1;
+}
+
+.outline-btn {
+  background: #ffffff !important;
+  color: #3b5bdb !important;
+  border: 1.5px solid #3b5bdb !important;
+}
+
+.outline-btn:hover:not(:disabled) {
+  background: #f0f3ff !important;
+}
+
 /* ── Mobile ── */
 @media (max-width: 480px) {
   .card-header {
