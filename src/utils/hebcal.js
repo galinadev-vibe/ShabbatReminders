@@ -133,18 +133,17 @@ function addOneDay(dateStr) {
 }
 
 /**
- * Formats a time from an ISO string (with UTC offset) into "h:mmam/pm" local time,
- * optionally adding extra minutes first.
- * e.g. "2026-03-13T17:52:00-04:00" + 0 min → "5:52pm"
- *      "2026-03-13T17:52:00-04:00" + 18 min → "6:10pm"
+ * Formats a time from a HebCal ISO string into "h:mmam/pm", optionally adding minutes.
+ * HebCal returns local wall-clock time with a UTC offset, e.g. "2026-03-13T17:52:00-05:00".
+ * The T-time component is already the local time, so we read it directly.
+ * e.g. "2026-03-13T17:52:00-05:00" + 0 min → "5:52pm"
+ *      "2026-03-13T17:52:00-05:00" + 18 min → "6:10pm"
  */
 export function formatLocalTime(isoString, addMinutes = 0) {
-  const match = isoString.match(/T(\d{2}):(\d{2}):\d{2}([+-])(\d{2}):(\d{2})$/)
+  const match = isoString.match(/T(\d{2}):(\d{2})/)
   if (!match) return ''
-  const [, hStr, mStr, sign, offH, offM] = match
-  const offsetMinutes = (parseInt(offH) * 60 + parseInt(offM)) * (sign === '+' ? 1 : -1)
-  const localMinutes = parseInt(hStr) * 60 + parseInt(mStr) + offsetMinutes + addMinutes
-  const wrapped = ((localMinutes % (24 * 60)) + 24 * 60) % (24 * 60)
+  const totalMinutes = parseInt(match[1]) * 60 + parseInt(match[2]) + addMinutes
+  const wrapped = ((totalMinutes % (24 * 60)) + 24 * 60) % (24 * 60)
   const h = Math.floor(wrapped / 60)
   const m = wrapped % 60
   const period = h >= 12 ? 'pm' : 'am'
