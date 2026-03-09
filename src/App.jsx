@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { fetchCalendarData, processCalendarItems, findSimchatTorahDate } from './utils/hebcal'
 import { generateICS } from './utils/icsGenerator'
-import { getHolidayLinks } from './utils/chabadLinks'
+import { getHolidayLinks, getChabadParshaLinks } from './utils/chabadLinks'
 import './App.css'
 
 const PREVIEW_COUNT = 3
@@ -162,9 +162,9 @@ export default function App() {
                 {previewEvents.slice(0, PREVIEW_COUNT).map((ev) => {
                   const label = ev.holiday?.title || ev.parshah?.title || 'Shabbat'
                   const holidayLinks = ev.holiday ? getHolidayLinks(ev.holiday.title) : null
-                  const parshaLink = !ev.holiday && ev.parshah?.link ? ev.parshah.link : null
-                  const familyLink = holidayLinks?.family || parshaLink
-                  const kidsLink = holidayLinks?.kids || parshaLink
+                  const parshaLinks = !ev.holiday && ev.parshah ? getChabadParshaLinks(ev.parshah.title) : null
+                  const familyLink = holidayLinks?.family || parshaLinks?.family
+                  const kidsLink = holidayLinks?.kids || parshaLinks?.kids
                   return (
                     <li key={ev.candleISOString} className="preview-row">
                       <span className="preview-date">{ev.dateDisplay}</span>
