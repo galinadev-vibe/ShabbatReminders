@@ -65,6 +65,20 @@ export const HOLIDAY_LINKS = {
 }
 
 /**
+ * Constructs Chabad.org links for a weekly parshah from HebCal's parshah title.
+ * HebCal titles look like "Parashat Vayakhel" or "Parashat Vayakhel-Pekudei".
+ * Returns { family, kids }.
+ */
+export function getChabadParshaLinks(parshaTitle) {
+  // Strip "Parashat " prefix → e.g. "Vayakhel" or "Vayakhel-Pekudei"
+  const name = parshaTitle.replace(/^Parashat\s+/i, '').trim()
+  return {
+    family: `https://www.chabad.org/parshah/article_cdo/jewish/${name}.htm`,
+    kids: `https://www.chabad.org/kids/article_cdo/jewish/${name}.htm`,
+  }
+}
+
+/**
  * Looks up Chabad.org links for a holiday title from HebCal.
  * Returns { family, kids } or null if not found.
  */

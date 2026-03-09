@@ -1,4 +1,4 @@
-import { getHolidayLinks } from './chabadLinks'
+import { getHolidayLinks, getChabadParshaLinks } from './chabadLinks'
 
 /**
  * Converts a JS Date to ICS UTC format: 20260313T215200Z
@@ -94,15 +94,18 @@ export function generateICS(events, { familyParshah, kidsParshah, reminderTime }
       const links = getHolidayLinks(holiday.title)
       if (links) {
         descLines.push('')
-        if (familyParshah) descLines.push(`Family: ${links.family}`)
-        if (kidsParshah) descLines.push(`Kids: ${links.kids}`)
+        if (familyParshah) descLines.push(`${holiday.title} – Family (Chabad): ${links.family}`)
+        if (kidsParshah) descLines.push(`${holiday.title} – Kids (Chabad): ${links.kids}`)
       }
     } else if (parshah) {
-      const parshaLink = parshah.link || ''
-      if (parshaLink) {
-        descLines.push('')
-        if (familyParshah) descLines.push(`Family: ${parshaLink}`)
-        if (kidsParshah) descLines.push(`Kids: ${parshaLink}`)
+      const chabadLinks = getChabadParshaLinks(parshah.title)
+      descLines.push('')
+      if (familyParshah) {
+        if (parshah.link) descLines.push(`${parshah.title} – Read on HebCal: ${parshah.link}`)
+        descLines.push(`${parshah.title} – Read on Chabad: ${chabadLinks.family}`)
+      }
+      if (kidsParshah) {
+        descLines.push(`${parshah.title} – Kids on Chabad: ${chabadLinks.kids}`)
       }
     }
 
