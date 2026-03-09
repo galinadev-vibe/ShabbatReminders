@@ -170,9 +170,9 @@ export default function App() {
                       <span className="preview-date">{ev.dateDisplay}</span>
                       <span className="preview-label">{label}</span>
                       <span className="preview-times">
-                        Candles {ev.timeDisplay}
+                        Candle lighting: {ev.timeDisplay}
                         {ev.sunsetDisplay && (
-                          <> · Sunset {ev.sunsetDisplay}</>
+                          <> · Sunset: {ev.sunsetDisplay}</>
                         )}
                       </span>
                       {(familyParshah || kidsParshah) && (familyLink || kidsLink) && (

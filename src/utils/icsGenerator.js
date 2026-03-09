@@ -101,8 +101,8 @@ export function generateICS(events, { familyParshah, kidsParshah, reminderTime }
       const parshaLink = parshah.link || ''
       if (parshaLink) {
         descLines.push('')
-        if (familyParshah) descLines.push(`Family Parshah: ${parshaLink}`)
-        if (kidsParshah) descLines.push(`Kids Parshah: ${parshaLink}`)
+        if (familyParshah) descLines.push(`Family: ${parshaLink}`)
+        if (kidsParshah) descLines.push(`Kids: ${parshaLink}`)
       }
     }
 
