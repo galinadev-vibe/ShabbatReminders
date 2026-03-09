@@ -30,7 +30,7 @@ export async function fetchCalendarData(zipCode) {
       geo: 'zip',
       zip: zipCode,
       m: '18',     // 18 minutes before sunset (standard candle lighting offset)
-      s: 'off',
+      s: 'on',
       leyning: 'off',
     })
 
