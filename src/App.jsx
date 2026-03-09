@@ -103,6 +103,7 @@ export default function App() {
               maxLength={5}
               value={zipCode}
               onChange={handleZipChange}
+              onKeyDown={(e) => { if (e.key === 'Enter' && !previewEvents) handlePreview() }}
             />
             <span className="field-hint">US zip codes only</span>
           </div>
